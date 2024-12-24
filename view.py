@@ -811,6 +811,244 @@ class Deferred(QMainWindow):
         self.setWindowTitle("دفع مؤجل")
         self.resize(500, 500)
 
+         
+        # فريم جديد
+        new_frame = QFrame(self)
+        new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
+        new_frame.setGeometry(0, 0, self.width(), self.height())
+        self.setCentralWidget(new_frame)
+
+        new_layout = QGridLayout(new_frame)
+
+        # فريم العنوان مع Layout خاص به
+        lest_label_frame = QFrame()
+        layout1 = QVBoxLayout(lest_label_frame)  # استخدام Layout منفصل
+        lest_label_frame.setStyleSheet("""
+            background-color: #50F296; 
+            color: white;
+            background-repeat: no-repeat;
+            background-position: center;
+        """)
+        lest_label_frame.setFixedHeight(50)
+        # 1,2 لكي تاخذ صف واحد وعمودين الاول والثاني
+        new_layout.addWidget(lest_label_frame, 0, 0, 1, 2)  # الهيدر 
+
+        # فريم يحتوي على باقي العناصر مع Layout منفصل
+        frame = QFrame()
+        layout2 = QGridLayout(frame)
+        new_layout.addWidget(frame, 1, 0, 1, 2)
+
+        # إضافة أيقونة في Layout1 (Layout العنوان)
+        icon_label = QLabel(lest_label_frame)
+        icon = QIcon('./static/15.png')  
+        icon_label.setPixmap(icon.pixmap(100, 100))  # تحديد حجم الأيقونة
+        layout1.addWidget(icon_label)
+
+
+         #انشاء فريم لوضع البيانات الفريم الابيض السفلي
+        frame = QFrame()
+        frame.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        frame.setFixedHeight(700)
+        new_layout.addWidget(frame,1,0)
+        frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+        
+        #انشاء فريم للحفض الفريم الابيض الجانبي
+        save_frame = QFrame()
+        save_frame.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #1A3654;
+        """)
+        save_frame_layout = QGridLayout(save_frame)
+        # save_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+       
+
+
+
+
+        label = QLabel("")
+        label.setStyleSheet('''
+             background-color: #1A3654;
+            font-family: Inter;
+            font-size:20px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+
+        save_frame_layout.addWidget(label,0,2)
+        # 1,1 تعني العمود الثاني والصف الثاني
+
+        # 2,1 تعني انهو ياخذ صفين الثاني والثالث وياخذ عمود واحد
+        new_layout.addWidget(save_frame,1,1)
+
+
+        
+        
+        # البحث في فريم الجانبي لل (save frame layout)
+
+        label_history = QLabel("اسم العميل")
+        label_history.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        save_frame_layout.addWidget(label_history, 0, 1)
+
+        history_input = QLineEdit()
+        history_input.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        save_frame_layout.addWidget(history_input, 0, 0)
+
+
+
+        
+        # البحث في فريم الجانبي لل (save frame layout)
+
+        label_history = QLabel("رقم الهاتف ")
+        label_history.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        save_frame_layout.addWidget(label_history, 1, 1)
+
+        history_input = QLineEdit()
+        history_input.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        save_frame_layout.addWidget(history_input, 1, 0)
+
+        ######
+        
+        
+        # البحث في فريم الجانبي لل (save frame layout)
+
+        label_number = QLabel("العنوان")
+        label_number.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        save_frame_layout.addWidget(label_number, 2, 1)
+
+        number_input = QLineEdit()
+        number_input.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        save_frame_layout.addWidget(number_input, 2, 0)
+
+
+
+        
+        # البحث في فريم الجانبي لل (save frame layout)
+
+        label_End_date = QLabel("السعر ")
+        label_End_date.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        save_frame_layout.addWidget(label_End_date, 3, 1)
+
+        End_date_input = QLineEdit()
+        End_date_input.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        save_frame_layout.addWidget(End_date_input, 3, 0)
+
+
+         #المجموع 
+        button1 = QPushButton()
+        button1.setStyleSheet("""
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;
+                             
+                               """)
+        
+        icon = QIcon('./static/Group 8 (1).png')  # تحميل الأيقونة
+        button1.setIcon(icon)
+        button1.setIconSize(QSize(90, 36))
+        
+        save_frame_layout.addWidget(button1,4,0,1,2)
+
+
+
+        button2 = QPushButton()
+        button2.setStyleSheet("""
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;
+                             
+                               """)
+        
+        icon = QIcon('./static/20.png')  # تحميل الأيقونة
+        button2.setIcon(icon)
+        button2.setIconSize(QSize(90, 36))
+        
+        save_frame_layout.addWidget(button2,5,0,1,2)
+
+        
+        button3 = QPushButton()
+        button3.setStyleSheet("""
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;
+                             
+                               """)
+        
+        icon = QIcon('./static/14.png')  # تحميل الأيقونة
+        button3.setIcon(icon)
+        button3.setIconSize(QSize(90, 36))
+        
+        save_frame_layout.addWidget(button3,6,0,1,2)
+
 
 
 
