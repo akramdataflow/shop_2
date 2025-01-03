@@ -245,7 +245,6 @@ class Lists(QMainWindow):
             border-radius: 4px;
             background-color: #fff;
         """)
-        frame.setFixedHeight(700)
         new_layout.addWidget(frame,1,0)
         frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
@@ -446,8 +445,7 @@ class Sales(QMainWindow):
             border-radius: 4px;
             background-color: #fff;
         """)
-        frame.setFixedHeight(700)
-        new_layout.addWidget(frame,2,0)
+        new_layout.addWidget(frame,1,0)
         frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         
@@ -475,7 +473,7 @@ class Sales(QMainWindow):
         # 1,1 تعني العمود الثاني والصف الثاني
 
         # 2,1 تعني انهو ياخذ صفين الثاني والثالث وياخذ عمود واحد
-        new_layout.addWidget(save_frame,2,1)
+        new_layout.addWidget(save_frame,1,1)
 
 
 
@@ -664,7 +662,6 @@ class Purchases(QMainWindow):
             border-radius: 4px;
             background-color: #fff;
         """)
-        frame.setFixedHeight(700)
         new_layout.addWidget(frame,2,0)
         frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         
