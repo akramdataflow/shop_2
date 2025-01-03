@@ -281,7 +281,7 @@ class Lists(QMainWindow):
 
         button1 = QPushButton()
         button1.setStyleSheet("""
-                QPushButton {
+                 QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -292,10 +292,17 @@ class Lists(QMainWindow):
                     line-height: normal;
                     
                     background-repeat: no-repeat;
-                        background-position: center;}
+                    background-position: center;}
                               
                     QPushButton:hover {
                     background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
                         }
                               
                               
@@ -306,13 +313,13 @@ class Lists(QMainWindow):
         button1.setIconSize(QSize(229, 62))
        
         save_frame_layout.addWidget(button1,0,0)
-        print("eeee")
+        
 
 
         
         button2 = QPushButton()
         button2.setStyleSheet("""
-                    QPushButton{
+                     QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -324,12 +331,15 @@ class Lists(QMainWindow):
                     
                     background-repeat: no-repeat;
                     background-position: center;}
+                              
                     QPushButton:hover {
                     background-color: lightblue; /* Hover color */
-                        }  
-
+                      
+                              
+                               }
+                              
                     QPushButton:pressed {
-                    background-color: darkblue; /* Pressed color */
+                    background-color: #92F7BD; /* Pressed color */
                     color: white; /* Change text color on press */
                         }       
                               
@@ -340,13 +350,13 @@ class Lists(QMainWindow):
         button2.setIconSize(QSize(90, 36))
         
         save_frame_layout.addWidget(button2,1,0)
-        print("eeee")
+        
         
 
         
         button3 = QPushButton()
         button3.setStyleSheet("""
-                    QPushButton{
+                    QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -358,14 +368,17 @@ class Lists(QMainWindow):
                     
                     background-repeat: no-repeat;
                     background-position: center;}
+                              
                     QPushButton:hover {
                     background-color: lightblue; /* Hover color */
-                        }  
-
+                      
+                              
+                               }
+                              
                     QPushButton:pressed {
-                    background-color: darkblue; /* Pressed color */
+                    background-color: #92F7BD; /* Pressed color */
                     color: white; /* Change text color on press */
-                        }       
+                        }      
                               
                                """)
         
@@ -374,7 +387,7 @@ class Lists(QMainWindow):
         button3.setIconSize(QSize(90, 36))
         
         save_frame_layout.addWidget(button3,2,0)
-        print("eeee")
+        
 
 
     
@@ -690,39 +703,7 @@ class Purchases(QMainWindow):
 
         button1 = QPushButton()
         button1.setStyleSheet("""
-                QPushButton {
-                    border-radius: 4px;
-                    background: #50F296;
-                    color: #1A3654;
-                    font-family: Inter;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: normal;
-                    
-                    background-repeat: no-repeat;
-                        background-position: center;}
-                              
-                    QPushButton:hover {
-                    background-color: lightblue; /* Hover color */
-                        }
-                              
-                              
-                               """)
-        
-        icon = QIcon('./static/Group 8 (1).png')  # تحميل الأيقونة
-        button1.setIcon(icon)
-        button1.setIconSize(QSize(90, 36))
-       
-        save_frame_layout.addWidget(button1,0,0)
-        print("eeee")
-
-
-
-        
-        button2 = QPushButton()
-        button2.setStyleSheet("""
-                    QPushButton{
+                 QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -734,12 +715,54 @@ class Purchases(QMainWindow):
                     
                     background-repeat: no-repeat;
                     background-position: center;}
+                              
                     QPushButton:hover {
                     background-color: lightblue; /* Hover color */
-                        }  
-
+                      
+                              
+                               }
+                              
                     QPushButton:pressed {
-                    background-color: darkblue; /* Pressed color */
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                              
+                              
+                               """)
+        
+        icon = QIcon('./static/Group 8 (1).png')  # تحميل الأيقونة
+        button1.setIcon(icon)
+        button1.setIconSize(QSize(90, 36))
+       
+        save_frame_layout.addWidget(button1,0,0)
+       
+
+
+
+        
+        button2 = QPushButton()
+        button2.setStyleSheet("""
+                    QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
                     color: white; /* Change text color on press */
                         }       
                               
@@ -750,7 +773,7 @@ class Purchases(QMainWindow):
         button2.setIconSize(QSize(90, 36))
         
         save_frame_layout.addWidget(button2,1,0)
-        print("eeee")
+        
 
 
 
@@ -982,6 +1005,7 @@ class Deferred(QMainWindow):
          #المجموع 
         button1 = QPushButton()
         button1.setStyleSheet("""
+                    QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -992,7 +1016,18 @@ class Deferred(QMainWindow):
                     line-height: normal;
                     
                     background-repeat: no-repeat;
-                    background-position: center;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
                              
                                """)
         
@@ -1006,6 +1041,7 @@ class Deferred(QMainWindow):
 
         button2 = QPushButton()
         button2.setStyleSheet("""
+                     QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -1016,7 +1052,18 @@ class Deferred(QMainWindow):
                     line-height: normal;
                     
                     background-repeat: no-repeat;
-                    background-position: center;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
                              
                                """)
         
@@ -1029,6 +1076,7 @@ class Deferred(QMainWindow):
         
         button3 = QPushButton()
         button3.setStyleSheet("""
+                     QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -1039,7 +1087,18 @@ class Deferred(QMainWindow):
                     line-height: normal;
                     
                     background-repeat: no-repeat;
-                    background-position: center;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
                              
                                """)
         
@@ -1230,6 +1289,7 @@ class  Materials(QMainWindow):
          #المجموع 
         button1 = QPushButton()
         button1.setStyleSheet("""
+                     QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -1240,7 +1300,18 @@ class  Materials(QMainWindow):
                     line-height: normal;
                     
                     background-repeat: no-repeat;
-                    background-position: center;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
                              
                                """)
         
@@ -1254,6 +1325,7 @@ class  Materials(QMainWindow):
 
         button2 = QPushButton()
         button2.setStyleSheet("""
+                     QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -1264,7 +1336,18 @@ class  Materials(QMainWindow):
                     line-height: normal;
                     
                     background-repeat: no-repeat;
-                    background-position: center;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
                              
                                """)
         
@@ -1417,6 +1500,7 @@ class Closet(QMainWindow):
         #المجموع 
         button3 = QPushButton()
         button3.setStyleSheet("""
+                     QPushButton {
                     border-radius: 4px;
                     background: #50F296;
                     color: #1A3654;
@@ -1427,7 +1511,18 @@ class Closet(QMainWindow):
                     line-height: normal;
                     
                     background-repeat: no-repeat;
-                    background-position: center;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
                              
                                """)
         
@@ -1437,28 +1532,6 @@ class Closet(QMainWindow):
         
         save_frame_layout.addWidget(button3,2,0,1,2)
         
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
