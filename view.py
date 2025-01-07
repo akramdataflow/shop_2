@@ -1,8 +1,8 @@
 import sys 
-from PySide6.QtWidgets import QSpinBox, QMainWindow, QPushButton, QGridLayout, QFrame, QVBoxLayout, QLabel , QLineEdit , QSizePolicy
+from PySide6.QtWidgets import QSpinBox, QMainWindow, QPushButton, QGridLayout, QFrame, QVBoxLayout, QLabel , QLineEdit , QSizePolicy, QDateEdit, QTableWidget, QTableWidgetItem, QSizePolicy, QHeaderView
 from PySide6.QtGui import QIcon, QFont
 from PySide6.QtCore import Qt, QSize
-
+import pandas as pd
 
 class MyView(QMainWindow):
     def __init__(self, controller=None):
@@ -190,7 +190,7 @@ class MyView(QMainWindow):
             }
         """)
         button7.setIcon(icon)
-        button7.clicked.connect(controller.show_closet) 
+        button7.clicked.connect(controller.show_Data_analysis) 
         button7.setIconSize(QSize(250, 250))
         frame_layout.addWidget(button7, 2, 0)
 
@@ -1151,14 +1151,56 @@ class  Materials(QMainWindow):
 
          #انشاء فريم لوضع البيانات الفريم الابيض السفلي
         frame = QFrame()
-        frame.setStyleSheet("""
-            border-radius: 4px;
-            background-color: #fff;
-        """)
-        frame.setFixedHeight(700)
-        new_layout.addWidget(frame,1,0)
-        frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        data_frame_layout = QVBoxLayout(frame)
+        
+        # استرجاع البيانات من الموديل عبر الكونترولر
+        data_tabel = self.controller.get_material_from_model()
+        
+        # إنشاء جدول البيانات
+        self.table = QTableWidget()
 
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.table.horizontalHeader().setStretchLastSection(True)
+        
+        # تعيين حجم الجدول داخل الفريم
+        self.table.resize(1000, 500)  # تغيير الحجم ليشغل مساحة أكبر داخل الفريم
+        
+        # تعيين خلفية الجدول إلى اللون الأبيض
+        self.table.setStyleSheet("background-color: white;")
+        
+        # تعيين هندسة الجدول داخل الفريم
+        self.table.setGeometry(frame.geometry())
+        
+        # إعداد الجدول: تعيين الأعمدة
+        self.table.setColumnCount(4)  # عدد الأعمدة (الاسم، النوع، العدد، تاريخ الانتهاء)
+        self.table.setHorizontalHeaderLabels(['Name', 'Type', 'Count', 'Expire'])  # العناوين
+        
+        # تعبئة الجدول بالبيانات
+        if data_tabel and len(data_tabel[0]) > 0:  # التأكد من وجود بيانات
+            row_count = len(data_tabel[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+            self.table.setRowCount(row_count)
+        
+            # تعبئة البيانات في الجدول
+            for row in range(row_count):
+                self.table.setItem(row, 0, QTableWidgetItem(data_tabel[0][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_tabel[1][row]))  # إدخال النوع
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_tabel[2][row])))  # إدخال العدد
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_tabel[3][row])))  # إدخال تاريخ الانتهاء
+        
+            # تعديل حجم الأعمدة لتناسب المحتوى بعد تعبئة الجدول
+            self.table.resizeColumnsToContents()
+        else:
+            self.table.setRowCount(0)
+        
+        # إضافة الجدول إلى التخطيط داخل الفريم
+        data_frame_layout.addWidget(self.table)
+        
+        # تعيين التخطيط للفريم
+        frame.setLayout(data_frame_layout)
+        
+        # إضافة الفريم إلى التخطيط الخارجي
+        new_layout.addWidget(frame, 1, 0)
+    
         
         #انشاء فريم للحفض الفريم الابيض الجانبي
         save_frame = QFrame()
@@ -1206,12 +1248,12 @@ class  Materials(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_history, 0, 1)
 
-        history_input = QLineEdit()
-        history_input.setStyleSheet("""
+        self.name_of_mat = QLineEdit()
+        self.name_of_mat.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(history_input, 0, 0)
+        save_frame_layout.addWidget(self.name_of_mat, 0, 0)
 
 
 
@@ -1229,12 +1271,12 @@ class  Materials(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_history, 1, 1)
 
-        history_input = QLineEdit()
-        history_input.setStyleSheet("""
+        self.type_of_mat = QLineEdit()
+        self.type_of_mat.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(history_input, 1, 0)
+        save_frame_layout.addWidget(self.type_of_mat, 1, 0)
 
         ######
         
@@ -1252,12 +1294,12 @@ class  Materials(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_number, 2, 1)
 
-        number_input = QLineEdit()
-        number_input.setStyleSheet("""
+        self.count_of_mat = QLineEdit()
+        self.count_of_mat.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(number_input, 2, 0)
+        save_frame_layout.addWidget(self.count_of_mat, 2, 0)
 
 
 
@@ -1275,16 +1317,17 @@ class  Materials(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_End_date, 3, 1)
 
-        End_date_input = QLineEdit()
-        End_date_input.setStyleSheet("""
+        self.expaier_of_mat = QDateEdit()
+        self.expaier_of_mat.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(End_date_input, 3, 0)
+        save_frame_layout.addWidget(self.expaier_of_mat, 3, 0)
 
 
          #المجموع 
         button1 = QPushButton()
+        button1.clicked.connect(self.send_data_to_controller)
         button1.setStyleSheet("""
                      QPushButton {
                     border-radius: 4px;
@@ -1353,6 +1396,16 @@ class  Materials(QMainWindow):
         button2.setIconSize(QSize(90, 36))
         
         save_frame_layout.addWidget(button2,5,0,1,2)
+
+
+    def send_data_to_controller(self):
+        name = self.name_of_mat.text()
+        type = self.type_of_mat.text()
+        count = self.count_of_mat.text()
+        expaier = self.expaier_of_mat.date().toString('yyyy-MM-dd')
+
+        self.controller.add_material_to_model(name, type, count, expaier)
+
         
 
 

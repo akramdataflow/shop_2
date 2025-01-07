@@ -1,9 +1,10 @@
 from view import *
-
+from model import *
 
 class Controller:
     def __init__(self):
         self.view = MyView(self)
+        self.model = Model()
 
     def show_list(self):
         self.show_list_add = Lists(self)
@@ -42,4 +43,17 @@ class Controller:
     def show_Data_analysis(self):
         self.show_Data_analysis_add = Data_analysis(self)
         self.show_Data_analysis_add.show()
+
+
+    def add_material_to_model(self, name, type, count, expaier):
+        self.model.add_material(name,type,count,expaier)
+
+    def get_material_from_model(self):
+        name, type, count, expaier = self.model.get_material()
+        return name, type, count, expaier
+
+
+
+
+    
 
