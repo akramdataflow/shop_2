@@ -1143,7 +1143,6 @@ class  Materials(QMainWindow):
 
         # فريم يحتوي على باقي العناصر مع Layout منفصل
         frame = QFrame()
-        layout2 = QGridLayout(frame)
         new_layout.addWidget(frame, 1, 0, 1, 2)
 
         # إضافة أيقونة في Layout1 (Layout العنوان)
@@ -1170,9 +1169,7 @@ class  Materials(QMainWindow):
         
         # تعيين خلفية الجدول إلى اللون الأبيض
         self.table.setStyleSheet("background-color: white;")
-        
-        # تعيين هندسة الجدول داخل الفريم
-        self.table.setGeometry(frame.geometry())
+
         
         # إعداد الجدول: تعيين الأعمدة
         self.table.setColumnCount(6)  # عدد الأعمدة (الاسم، النوع، العدد، تاريخ الانتهاء)
