@@ -1,8 +1,8 @@
 import sys 
 from PySide6.QtWidgets import QSpinBox, QMainWindow, QPushButton, QGridLayout, QFrame, QVBoxLayout, QLabel , QLineEdit , QSizePolicy, QDateEdit, QTableWidget, QTableWidgetItem, QSizePolicy, QHeaderView
 from PySide6.QtGui import QIcon, QFont
-from PySide6.QtCore import Qt, QSize
-import pandas as pd
+from PySide6.QtCore import QDate, QSize
+from datetime import datetime
 
 class MyView(QMainWindow):
     def __init__(self, controller=None):
@@ -64,7 +64,7 @@ class MyView(QMainWindow):
             }
         """)
         button1.setIcon(icon)
-        button1.setIconSize(QSize(250, 250))
+        button1.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button1, 0, 0)
 
         # Button 2
@@ -85,7 +85,7 @@ class MyView(QMainWindow):
             }
         """)
         button2.setIcon(icon)
-        button2.setIconSize(QSize(250, 250))
+        button2.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button2, 0, 1)
 
         # Button 3
@@ -107,7 +107,7 @@ class MyView(QMainWindow):
         """)
         button3.setIcon(icon)
         button3.clicked.connect(controller.show_Purchases)
-        button3.setIconSize(QSize(250, 250))
+        button3.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button3, 0, 2)
 
         # Button 4
@@ -128,7 +128,7 @@ class MyView(QMainWindow):
         """)
         button4.setIcon(icon)
         button4.clicked.connect(controller.show_Deferred)
-        button4.setIconSize(QSize(250, 250))
+        button4.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button4, 1, 0)
 
         # Button 5
@@ -149,7 +149,7 @@ class MyView(QMainWindow):
         """)
         button5.setIcon(icon)
         button5.clicked.connect(controller.show_materials)
-        button5.setIconSize(QSize(250, 250))
+        button5.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button5, 1, 1)
 
         # Button 6
@@ -170,7 +170,7 @@ class MyView(QMainWindow):
         """)
         button6.setIcon(icon)
         button6.clicked.connect(controller.show_closet)       
-        button6.setIconSize(QSize(250, 250))
+        button6.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button6, 1, 2)
 
         # Button 7
@@ -191,7 +191,7 @@ class MyView(QMainWindow):
         """)
         button7.setIcon(icon)
         button7.clicked.connect(controller.show_Data_analysis) 
-        button7.setIconSize(QSize(250, 250))
+        button7.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button7, 2, 0)
 
 
@@ -1160,10 +1160,6 @@ class  Materials(QMainWindow):
         self.table = QTableWidget()
 
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-        self.table.horizontalHeader().setStretchLastSection(True)
-        
-        # تعيين حجم الجدول داخل الفريم
-        self.table.resize(1000, 500)  # تغيير الحجم ليشغل مساحة أكبر داخل الفريم
         
         # تعيين خلفية الجدول إلى اللون الأبيض
         self.table.setStyleSheet("background-color: white;")
@@ -1318,6 +1314,13 @@ class  Materials(QMainWindow):
         save_frame_layout.addWidget(label_End_date, 3, 1)
 
         self.expaier_of_mat = QDateEdit()
+        # تعيين التاريخ الافتراضي ليكون تاريخ اليوم
+        self.expaier_of_mat.setDate(QDate.currentDate())
+
+        # تعيين تنسيق العرض ليشمل اليوم والشهر والسنة فقط
+        self.expaier_of_mat.setDisplayFormat("dd/MM/yyyy")
+
+        
         self.expaier_of_mat.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
