@@ -44,13 +44,31 @@ class Controller:
         self.show_Data_analysis_add = Data_analysis(self)
         self.show_Data_analysis_add.show()
 
+    def del_mat_show(self):
+        self.show_del_mat = DelMat(self)
+        self.show_del_mat.show()
 
-    def add_material_to_model(self, name, type, count, expaier):
-        self.model.add_material(name,type,count,expaier)
+    def update_mat_show(self):
+        self.show_update_mat = UpdateMat(self)
+        self.show_update_mat.show()
+
+
+    def add_material_to_model(self, name, type, count, expaier, price):
+        self.model.add_material(name,type,count,expaier, price)
 
     def get_material_from_model(self):
-        name, type, count, expaier = self.model.get_material()
-        return name, type, count, expaier
+        mat_id, name, type, count, expaier, price = self.model.get_material()
+        return mat_id, name, type, count, expaier, price
+    
+    def del_material_from_model(self, material_id):
+        self.model.del_material(material_id)
+        self.show_materials()
+
+
+    def update_material_to_model(self, material_id, name, type, expaier, price):
+        self.model.update_material(material_id, name, type, expaier, price)
+        self.show_materials()
+        
 
 
 

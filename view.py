@@ -1,5 +1,5 @@
 import sys 
-from PySide6.QtWidgets import QSpinBox, QMainWindow, QPushButton, QGridLayout, QFrame, QVBoxLayout, QLabel , QLineEdit , QSizePolicy, QDateEdit, QTableWidget, QTableWidgetItem, QSizePolicy, QHeaderView
+from PySide6.QtWidgets import QSpinBox, QMainWindow, QPushButton, QGridLayout, QFrame, QVBoxLayout, QLabel , QLineEdit , QSizePolicy, QDateEdit, QTableWidget, QTableWidgetItem, QSizePolicy, QHeaderView, QAbstractItemView
 from PySide6.QtGui import QIcon, QFont
 from PySide6.QtCore import QDate, QSize
 from datetime import datetime
@@ -10,6 +10,8 @@ class MyView(QMainWindow):
         self.controller = controller
 
         self.setGeometry(100, 200, 800, 1000)
+
+        self.showMaximized()
 
         main_frame = QFrame()
         main_frame.setStyleSheet(
@@ -1115,6 +1117,8 @@ class  Materials(QMainWindow):
 
         self.setWindowTitle("اضافة مواد")
         self.resize(500, 500)
+
+        self.showMaximized()
         
         # فريم جديد
         new_frame = QFrame(self)
@@ -1159,7 +1163,10 @@ class  Materials(QMainWindow):
         # إنشاء جدول البيانات
         self.table = QTableWidget()
 
+        #جعل حجم الجدول يتناسب مع حجم الشاشه 
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        self.table.setAlternatingRowColors(True)
         
         # تعيين خلفية الجدول إلى اللون الأبيض
         self.table.setStyleSheet("background-color: white;")
@@ -1168,8 +1175,8 @@ class  Materials(QMainWindow):
         self.table.setGeometry(frame.geometry())
         
         # إعداد الجدول: تعيين الأعمدة
-        self.table.setColumnCount(4)  # عدد الأعمدة (الاسم، النوع، العدد، تاريخ الانتهاء)
-        self.table.setHorizontalHeaderLabels(['Name', 'Type', 'Count', 'Expire'])  # العناوين
+        self.table.setColumnCount(6)  # عدد الأعمدة (الاسم، النوع، العدد، تاريخ الانتهاء)
+        self.table.setHorizontalHeaderLabels(['الاسم', 'النوع', 'العدد', 'تاريخ الانتهاء', 'الترميز', 'السعر'])  # العناوين
         
         # تعبئة الجدول بالبيانات
         if data_tabel and len(data_tabel[0]) > 0:  # التأكد من وجود بيانات
@@ -1178,10 +1185,12 @@ class  Materials(QMainWindow):
         
             # تعبئة البيانات في الجدول
             for row in range(row_count):
-                self.table.setItem(row, 0, QTableWidgetItem(data_tabel[0][row]))  # إدخال الاسم
-                self.table.setItem(row, 1, QTableWidgetItem(data_tabel[1][row]))  # إدخال النوع
-                self.table.setItem(row, 2, QTableWidgetItem(str(data_tabel[2][row])))  # إدخال العدد
-                self.table.setItem(row, 3, QTableWidgetItem(str(data_tabel[3][row])))  # إدخال تاريخ الانتهاء
+                self.table.setItem(row, 5, QTableWidgetItem(str(data_tabel[0][row])))  
+                self.table.setItem(row, 0, QTableWidgetItem(data_tabel[1][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_tabel[2][row]))  # إدخال النوع
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_tabel[3][row])))  # إدخال العدد
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_tabel[4][row])))  # إدخال تاريخ الانتهاء
+                self.table.setItem(row, 4, QTableWidgetItem(str(data_tabel[5][row])))
         
             # تعديل حجم الأعمدة لتناسب المحتوى بعد تعبئة الجدول
             self.table.resizeColumnsToContents()
@@ -1328,6 +1337,25 @@ class  Materials(QMainWindow):
         save_frame_layout.addWidget(self.expaier_of_mat, 3, 0)
 
 
+        label_number = QLabel("السعر")
+        label_number.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        save_frame_layout.addWidget(label_number, 4, 1)
+
+        self.price_of_mat = QLineEdit()
+        self.price_of_mat.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        save_frame_layout.addWidget(self.price_of_mat, 4, 0)
+
+
          #المجموع 
         button1 = QPushButton()
         button1.clicked.connect(self.send_data_to_controller)
@@ -1362,11 +1390,12 @@ class  Materials(QMainWindow):
         button1.setIcon(icon)
         button1.setIconSize(QSize(90, 36))
         
-        save_frame_layout.addWidget(button1,4,0,1,2)
+        save_frame_layout.addWidget(button1,5,0,1,2)
 
 
 
         button2 = QPushButton()
+        button2.clicked.connect(self.controller.update_mat_show)
         button2.setStyleSheet("""
                      QPushButton {
                     border-radius: 4px;
@@ -1398,7 +1427,43 @@ class  Materials(QMainWindow):
         button2.setIcon(icon)
         button2.setIconSize(QSize(90, 36))
         
-        save_frame_layout.addWidget(button2,5,0,1,2)
+        save_frame_layout.addWidget(button2,6,0,1,2)
+
+        
+        button3 = QPushButton()
+        button3.clicked.connect(self.controller.del_mat_show)
+        button3.setStyleSheet("""
+                     QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                             
+                               """)
+        
+        icon = QIcon('./static/14.png')  # تحميل الأيقونة
+        button3.setIcon(icon)
+        button3.setIconSize(QSize(90, 36))
+        
+        save_frame_layout.addWidget(button3,7,0,1,2)
 
 
     def send_data_to_controller(self):
@@ -1407,9 +1472,10 @@ class  Materials(QMainWindow):
         type = self.type_of_mat.text()
         count = self.count_of_mat.text()
         expaier = self.expaier_of_mat.date().toString('yyyy-MM-dd')
+        price = self.price_of_mat.text()
 
         # إرسال البيانات إلى الكونترولر لإضافتها للنموذج
-        self.controller.add_material_to_model(name, type, count, expaier)
+        self.controller.add_material_to_model(name, type, count, expaier, price)
 
         # تحديث الجدول بعد الحفظ
         self.refresh_table()
@@ -1427,10 +1493,12 @@ class  Materials(QMainWindow):
             self.table.setRowCount(row_count)
 
             for row in range(row_count):
-                self.table.setItem(row, 0, QTableWidgetItem(data_table[0][row]))  # إدخال الاسم
-                self.table.setItem(row, 1, QTableWidgetItem(data_table[1][row]))  # إدخال النوع
-                self.table.setItem(row, 2, QTableWidgetItem(str(data_table[2][row])))  # إدخال العدد
-                self.table.setItem(row, 3, QTableWidgetItem(str(data_table[3][row])))  # إدخال تاريخ الانتهاء
+                self.table.setItem(row, 5, QTableWidgetItem(str(data_table[0][row])))  # إدخال الاسم
+                self.table.setItem(row, 0, QTableWidgetItem(data_table[1][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_table[2][row]))  # إدخال النوع
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_table[3][row])))  # إدخال العدد
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_table[4][row])))  # إدخال تاريخ الانتهاء
+                self.table.setItem(row, 4, QTableWidgetItem(str(data_table[5][row])))
 
 
 
@@ -1628,3 +1696,259 @@ class Data_analysis(QMainWindow):
         self.setWindowTitle("تحليل")
         self.resize(500, 500)
 
+
+
+
+class DelMat(QMainWindow):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle("تعديل المادة")
+        self.resize(300, 250)
+
+
+         
+        # فريم جديد
+        new_frame = QFrame(self)
+        new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
+        new_frame.setGeometry(0, 0, self.width(), self.height())
+        self.setCentralWidget(new_frame)
+
+        new_layout = QGridLayout(new_frame)
+
+
+        label = QLabel('اكتب ترميز المنتج الذي تريد حذفه')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,0,1)
+
+        self.id_mat = QLineEdit('')
+        self.id_mat.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.id_mat,0,0)
+
+        button1 = QPushButton()
+        button1.clicked.connect(self.send_id_mat_to_controller)
+        button1.setStyleSheet("""
+                     QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                             
+                               """)
+        
+        icon = QIcon('./static/14.png')  # تحميل الأيقونة
+        button1.setIcon(icon)
+        button1.setIconSize(QSize(90, 36))
+        
+        new_layout.addWidget(button1,1,0,1,2)
+
+    def send_id_mat_to_controller(self):
+        id_mat = self.id_mat.text()
+        self.controller.del_material_from_model(id_mat)
+
+
+
+class UpdateMat(QMainWindow):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle("حذف مادة")
+        self.resize(300, 250)
+
+
+         
+        # فريم جديد
+        new_frame = QFrame(self)
+        new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
+        new_frame.setGeometry(0, 0, self.width(), self.height())
+        self.setCentralWidget(new_frame)
+
+        new_layout = QGridLayout(new_frame)
+
+
+        label = QLabel('اكتب ترميز المنتج الذي تريد تعديله')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,0,1)
+
+        self.id_mat = QLineEdit('')
+        self.id_mat.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.id_mat,0,0)
+
+
+        label = QLabel('اسم المادة')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,1,1)
+
+        self.name_mat = QLineEdit('')
+        self.name_mat.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.name_mat,1,0)
+        
+
+        label = QLabel('نوع المادة')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,2,1)
+
+
+
+        self.type_mat = QLineEdit('')
+        self.type_mat.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.type_mat,2,0)
+
+
+        label = QLabel('السعر')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,3,1)
+
+
+
+        self.price_mat = QLineEdit('')
+        self.price_mat.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.price_mat,3,0)
+
+
+
+        label = QLabel("تاريخ الانتهاء")
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,4,1)
+
+        self.expaier_mat = QDateEdit()
+        # تعيين التاريخ الافتراضي ليكون تاريخ اليوم
+        self.expaier_mat.setDate(QDate.currentDate())
+
+        # تعيين تنسيق العرض ليشمل اليوم والشهر والسنة فقط
+        self.expaier_mat.setDisplayFormat("dd/MM/yyyy")
+
+
+        self.expaier_mat.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.expaier_mat,4,0)
+
+
+
+        button = QPushButton()
+        button.clicked.connect(self.send_update_data_to_controller)
+        button.setStyleSheet("""
+                     QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                             
+                               """)
+        
+        icon = QIcon('./static/20.png')  # تحميل الأيقونة
+        button.setIcon(icon)
+        button.setIconSize(QSize(90, 36))
+
+        new_layout.addWidget(button,5,0,1,2)
+
+    def send_update_data_to_controller(self):
+        id_mat = self.id_mat.text()
+        name = self.name_mat.text()
+        type = self.type_mat.text()
+        price = self.price_mat.text()
+        expaier = self.expaier_mat.date().toString('yyyy-MM-dd')
+        self.controller.update_material_to_model(id_mat, name, type, expaier, price)
+
+        
+
+
+        
+        

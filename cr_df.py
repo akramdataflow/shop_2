@@ -11,11 +11,12 @@ def init_db():
             name_of_material TEXT NOT NULL,
             type_of_materials TEXT NOT NULL,
             count INTEGER NOT NULL,
-            expaier DATE NOT NULL
+            expaier DATE NOT NULL,
+            price INTEGER NOT NULL
         );
     ''')
 
-    # Create Purchases Table
+    # Create Purchases Table المشتريات
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Purchases (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +37,7 @@ def init_db():
         );
     ''')
 
-    # Create Deferred Table
+    # Create Deferred Table المؤجل
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Deferred (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
