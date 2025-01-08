@@ -48,7 +48,7 @@ class MyView(QMainWindow):
 
         # Button 1
         button1 = QPushButton()
-        button1.clicked.connect(controller.show_list)
+        button1.clicked.connect(self.controller.show_list)
         button1.setStyleSheet("""
             QPushButton {
                 background-color: #FFF;
@@ -69,7 +69,7 @@ class MyView(QMainWindow):
 
         # Button 2
         button2 = QPushButton()
-        button2.clicked.connect(controller.show_sales)
+        button2.clicked.connect(self.controller.show_sales)
         button2.setStyleSheet("""
             QPushButton {
                 background-color: #FFF;
@@ -106,7 +106,7 @@ class MyView(QMainWindow):
             }
         """)
         button3.setIcon(icon)
-        button3.clicked.connect(controller.show_Purchases)
+        button3.clicked.connect(self.controller.show_Purchases)
         button3.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button3, 0, 2)
 
@@ -127,7 +127,7 @@ class MyView(QMainWindow):
             }
         """)
         button4.setIcon(icon)
-        button4.clicked.connect(controller.show_Deferred)
+        button4.clicked.connect(self.controller.show_Deferred)
         button4.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button4, 1, 0)
 
@@ -148,7 +148,7 @@ class MyView(QMainWindow):
             }
         """)
         button5.setIcon(icon)
-        button5.clicked.connect(controller.show_materials)
+        button5.clicked.connect(self.controller.show_materials)
         button5.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button5, 1, 1)
 
@@ -169,7 +169,7 @@ class MyView(QMainWindow):
             }
         """)
         button6.setIcon(icon)
-        button6.clicked.connect(controller.show_closet)       
+        button6.clicked.connect(self.controller.show_closet)       
         button6.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button6, 1, 2)
 
@@ -190,7 +190,7 @@ class MyView(QMainWindow):
             }
         """)
         button7.setIcon(icon)
-        button7.clicked.connect(controller.show_Data_analysis) 
+        button7.clicked.connect(self.controller.show_Data_analysis) 
         button7.setIconSize(QSize(200, 200))
         frame_layout.addWidget(button7, 2, 0)
 
@@ -1320,7 +1320,7 @@ class  Materials(QMainWindow):
         # تعيين تنسيق العرض ليشمل اليوم والشهر والسنة فقط
         self.expaier_of_mat.setDisplayFormat("dd/MM/yyyy")
 
-        
+
         self.expaier_of_mat.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
@@ -1402,12 +1402,40 @@ class  Materials(QMainWindow):
 
 
     def send_data_to_controller(self):
+        # الحصول على البيانات من الواجهة
         name = self.name_of_mat.text()
         type = self.type_of_mat.text()
         count = self.count_of_mat.text()
         expaier = self.expaier_of_mat.date().toString('yyyy-MM-dd')
 
+        # إرسال البيانات إلى الكونترولر لإضافتها للنموذج
         self.controller.add_material_to_model(name, type, count, expaier)
+
+        # تحديث الجدول بعد الحفظ
+        self.refresh_table()
+
+    def refresh_table(self):
+        # استرجاع البيانات من النموذج عبر الكونترولر
+        data_table = self.controller.get_material_from_model()
+
+        # مسح البيانات القديمة في الجدول
+        self.table.setRowCount(0)
+
+        # تعبئة الجدول بالبيانات الجديدة
+        if data_table and len(data_table[0]) > 0:
+            row_count = len(data_table[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+            self.table.setRowCount(row_count)
+
+            for row in range(row_count):
+                self.table.setItem(row, 0, QTableWidgetItem(data_table[0][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_table[1][row]))  # إدخال النوع
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_table[2][row])))  # إدخال العدد
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_table[3][row])))  # إدخال تاريخ الانتهاء
+
+
+
+        
+
 
         
 
