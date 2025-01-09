@@ -5,6 +5,8 @@ class Model:
     def __init__(self):
         self.conn = sqlite3.connect('data.db')  
         self.cursor = self.conn.cursor()
+        self.add_bill('23432','sdgdfg')
+        self.add_bill_detales(invoice_id=3, material_name='del1', quantity="3", unit_price=234, total_price=10000000)
 
     def add_material(self, name, type, count, expaier, price):
         self.cursor.execute("INSERT INTO Materials (name_of_material, type_of_materials, count, expaier, price) VALUES (?, ?, ?, ?, ?)", (name, type, count, expaier, price))
@@ -45,14 +47,15 @@ class Model:
         
     def get_Deferred(self):
         self.cursor.execute('SELECT * FROM Deferred')
-        rows = self.cursor.fetchall()  # جلب جميع البيانات دفعة واحدة
+        rows = self.cursor.fetchall()  
         defe_id = [col[0] for col in rows] 
         customer_name = [col[1] for col in rows] 
-        phone_num = [col[2] for col in rows]
+        phone_num = [str(col[2]) for col in rows]  # Convert to string
         address = [col[3] for col in rows] 
         price = [col[4] for col in rows]
-        
         return defe_id, customer_name, phone_num, address, price
+        
+        
     
     
     def del_Deferred(self, deferred_id):
@@ -68,3 +71,35 @@ class Model:
             WHERE id = ?
         ''', (customer_name, phone_num, address, price, deferred_id))
         self.conn.commit()    
+
+
+
+########################################################## اضافه فاتورة
+
+    def add_bill(self, invoice_date, total_amount):
+        self.cursor.execute("INSERT INTO Invoices (invoice_date, total_amount) VALUES (?, ?)", (invoice_date, total_amount))
+        self.conn.commit()
+
+##########################################################اضافة تفاصيل الفاتوره
+
+    def add_bill_detales(self, invoice_id, material_name, quantity, unit_price, total_price):
+        self.cursor.execute("INSERT INTO InvoiceDetails (invoice_id, material_name, quantity, unit_price, total_price) VALUES (?, ?, ?, ?, ?)", (invoice_id, material_name, quantity, unit_price, total_price))
+        self.conn.commit()
+
+    def get_bill_detales(self):
+        self.cursor.execute('SELECT * FROM InvoiceDetails')
+        rows = self.cursor.fetchall()  
+        invoice_id = [str(col[1]) for col in rows] 
+        material_name = [col[2] for col in rows] 
+        quantity = [col[3] for col in rows]
+        unit_price = [col[4] for col in rows] 
+        total_price = [col[5] for col in rows]
+        return invoice_id, material_name, quantity, unit_price, total_price
+    
+
+
+    def del_bill_detales(self, material_name):
+        self.cursor.execute("DELETE FROM InvoiceDetails WHERE material_name = ?", (material_name,))
+        self.conn.commit()
+        
+

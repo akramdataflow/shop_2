@@ -27,6 +27,7 @@ class Controller:
         self.show_Deferred_add.show() 
 
 
+
       
     def show_materials (self):
         self.show_materials_add =  Materials(self)
@@ -101,10 +102,19 @@ class Controller:
     def update_Deferred_to_model(self, deferred_id, customer_name, phone_num, address, price):
         self.model.update_Deferred(deferred_id, customer_name, phone_num, address, price)
         self.show_Deferred()
-        
-        
 
+###################################################################### كونترولر اضافة تفاصيل الفاتوره
 
+    def del_bill_detales_show(self):
+            self.show_del_bill_detales = DelListDetales(self)
+            self.show_del_bill_detales.show()
+
+    def get_bill_detales_from_model(self):
+        return self.model.get_bill_detales()
+
+    def del_bill_detales_from_model(self,material_name):
+        self.model.del_bill_detales(material_name)
+        self.show_list()
 
 
     

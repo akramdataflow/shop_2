@@ -1,5 +1,5 @@
 import sys 
-from PySide6.QtWidgets import QSpinBox, QMainWindow, QPushButton, QGridLayout, QFrame, QVBoxLayout, QLabel , QLineEdit , QSizePolicy, QDateEdit, QTableWidget, QTableWidgetItem, QSizePolicy, QHeaderView, QAbstractItemView
+from PySide6.QtWidgets import QSpinBox, QMainWindow, QPushButton, QGridLayout, QFrame, QVBoxLayout, QLabel , QLineEdit , QSizePolicy, QDateEdit, QTableWidget, QTableWidgetItem, QSizePolicy, QHeaderView, QAbstractItemView, QHBoxLayout
 from PySide6.QtGui import QIcon, QFont
 from PySide6.QtCore import QDate, QSize
 from datetime import datetime
@@ -205,6 +205,8 @@ class Lists(QMainWindow):
         self.setWindowTitle("القوائم")
         self.resize(500, 500)
 
+        self.showMaximized()
+
         
         # فريم جديد
         new_frame = QFrame(self)
@@ -241,14 +243,93 @@ class Lists(QMainWindow):
 
 
         
-        #انشاء فريم لوضع البيانات الفريم الابيض السفلي
         frame = QFrame()
-        frame.setStyleSheet("""
-            border-radius: 4px;
-            background-color: #fff;
-        """)
-        new_layout.addWidget(frame,1,0)
-        frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        data_frame_layout = QVBoxLayout(frame)
+        
+        # استرجاع البيانات من الموديل عبر الكونترولر
+        data_tabel = self.controller.get_bill_detales_from_model()
+        
+        # إنشاء جدول البيانات
+        self.table = QTableWidget()
+
+        #جعل حجم الجدول يتناسب مع حجم الشاشه 
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        self.table.setAlternatingRowColors(True)
+        
+        # تعيين خلفية الجدول إلى اللون الأبيض
+        self.table.setStyleSheet("background-color: white;")
+
+        
+        # إعداد الجدول: تعيين الأعمدة
+        self.table.setColumnCount(5)  # عدد الأعمدة (الاسم، النوع، العدد، تاريخ الانتهاء)
+        self.table.setHorizontalHeaderLabels(['المادة','سعر القطعة','العدد', 'السعر الكلي', 'الترميز'])  # العناوين
+        
+        # تعبئة الجدول بالبيانات
+        if data_tabel and len(data_tabel[0]) > 0:  # التأكد من وجود بيانات
+            row_count = len(data_tabel[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+            self.table.setRowCount(row_count)
+        
+            # تعبئة البيانات في الجدول
+            for row in range(row_count): 
+                self.table.setItem(row, 4, QTableWidgetItem(data_tabel[0][row]))  # إدخال الاسم
+                self.table.setItem(row, 0, QTableWidgetItem(data_tabel[1][row]))  # إدخال رقم الهاتف
+                self.table.setItem(row, 1, QTableWidgetItem(str(data_tabel[2][row])))  # إدخال العنوان
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_tabel[3][row])))  #السعر
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_tabel[4][row])))   #id
+        
+            # تعديل حجم الأعمدة لتناسب المحتوى بعد تعبئة الجدول
+            self.table.resizeColumnsToContents()
+        else:
+            self.table.setRowCount(0)
+        
+        # إضافة الجدول إلى التخطيط داخل الفريم
+        data_frame_layout.addWidget(self.table)
+        
+        # تعيين التخطيط للفريم
+        frame.setLayout(data_frame_layout)
+        
+        # إضافة الفريم إلى التخطيط الخارجي
+        new_layout.addWidget(frame, 1, 0)
+        
+        #فريم المجموع
+        total_frame = QFrame()
+        total_frame_layout = QHBoxLayout(total_frame)
+        new_layout.addWidget(total_frame, 2, 0, 1, 2)
+
+        label = QLabel("تاريخ الفاتورة : {2025}/{1}/{9}")
+        label.setStyleSheet('''
+            background-color: #ffffff;
+            font-family: Inter;
+            font-size:20px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        total_frame_layout.addWidget(label)
+
+
+        label = QLabel(f"رقم الفاتورة : {33000}")
+        label.setStyleSheet('''
+             background-color: #ffffff;
+            font-family: Inter;
+            font-size:20px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        total_frame_layout.addWidget(label)
+
+        label = QLabel(f"المجموع : {33000}")
+        label.setStyleSheet('''
+             background-color: #ffffff;
+            font-family: Inter;
+            font-size:20px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        total_frame_layout.addWidget(label)
 
 
         
@@ -319,6 +400,7 @@ class Lists(QMainWindow):
 
         
         button2 = QPushButton()
+        button2.clicked.connect(self.controller.del_bill_detales_show)
         button2.setStyleSheet("""
                      QPushButton {
                     border-radius: 4px;
@@ -356,6 +438,7 @@ class Lists(QMainWindow):
 
         
         button3 = QPushButton()
+        button3.clicked.connect(self.controller.show_Deferred)
         button3.setStyleSheet("""
                     QPushButton {
                     border-radius: 4px;
@@ -2281,16 +2364,90 @@ class UpdateDefer(QMainWindow):
 
         new_layout.addWidget(button,5,0,1,2)
 
+
     def send_update_data_defer_to_controller(self):
         id_defe = self.id_defe.text()
         customer_name = self.customer_name.text()
         phone_num = self.phone_num.text()
         address = self.address.text()
-        price = self.address.date()
-        self.controller.update_deferred_to_model(id_defe, customer_name, phone_num, address, price)
+        price = self.price.text()
+        self.controller.update_Deferred_to_model(id_defe, customer_name, phone_num, address, price)
 
         
     
+class DelListDetales(QMainWindow):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle("حذف تفاصيل الطلب")
+        self.resize(300, 250)
+
+
+        new_frame = QFrame(self)
+        new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
+        new_frame.setGeometry(0, 0, self.width(), self.height())
+        self.setCentralWidget(new_frame)
+
+        new_layout = QGridLayout(new_frame)
+
+
+        label = QLabel('اكتب ترميز المنتج الذي تريد حذفه')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,0,1)
+
+        self.id_defe = QLineEdit('')
+        self.id_defe.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.id_defe,0,0)
+
+        button1 = QPushButton()
+        button1.clicked.connect(self.send_id_defe_to_controller)
+        button1.setStyleSheet("""
+                     QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                             
+                               """)
+        
+        icon = QIcon('./static/14.png')  # تحميل الأيقونة
+        button1.setIcon(icon)
+        button1.setIconSize(QSize(90, 36))
+        
+        new_layout.addWidget(button1,1,0,1,2)
+
+    def send_id_defe_to_controller(self):
+        id_defe = self.id_defe.text()
+        self.controller.del_bill_detales_from_model(id_defe)
 
         
         

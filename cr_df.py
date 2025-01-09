@@ -16,7 +16,7 @@ def init_db():
         );
     ''')
 
-    # Create Purchases Table المشتريات
+    # Create Purchases Table (المشتريات)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Purchases (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -37,7 +37,7 @@ def init_db():
         );
     ''')
 
-    # Create Deferred Table المؤجل
+    # Create Deferred Table (المؤجل)
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Deferred (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,6 +45,27 @@ def init_db():
             phone_num INTEGER NOT NULL,
             address TEXT NOT NULL,
             price INTEGER NOT NULL
+        );
+    ''')
+
+    # Create Invoices Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Invoices (
+            invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            invoice_date DATETIME NOT NULL,
+            total_amount INTEGER NOT NULL
+        );
+    ''')
+
+    # Create InvoiceDetails Table
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS InvoiceDetails (
+            detail_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            invoice_id INTEGER NOT NULL,
+            material_name CHAR NOT NULL,
+            quantity INTEGER NOT NULL,
+            unit_price REAL NOT NULL,
+            total_price REAL NOT NULL
         );
     ''')
 
