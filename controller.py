@@ -44,6 +44,8 @@ class Controller:
         self.show_Data_analysis_add = Data_analysis(self)
         self.show_Data_analysis_add.show()
 
+        #########################كونترول الحاصه بلمواد
+
     def del_mat_show(self):
         self.show_del_mat = DelMat(self)
         self.show_del_mat.show()
@@ -68,6 +70,38 @@ class Controller:
     def update_material_to_model(self, material_id, name, type, expaier, price):
         self.model.update_material(material_id, name, type, expaier, price)
         self.show_materials()
+
+
+
+        ################################################ كونترول المؤجل
+
+
+        
+    def del_defer_show(self):
+        self.show_del_defer = DelDefer(self)
+        self.show_del_defer.show()
+
+    def update_defer_show(self):
+        self.show_update_defer = UpdateDefer(self)
+        self.show_update_defer.show()
+
+
+    def add_Deferred_to_model(self, customer_name, phone_num, address, price):
+        self.model.add_Deferred(customer_name, phone_num, address, price)
+
+    def get_Deferred_from_model(self):
+        defe_id, customer_name, phone_num, address, price = self.model.get_Deferred()
+        return defe_id, customer_name, phone_num, address, price
+    
+    def del_Deferred_from_model(self,deferred_id):
+        self.model.del_Deferred(deferred_id)
+        self.show_Deferred()
+
+
+    def update_Deferred_to_model(self, deferred_id, customer_name, phone_num, address, price):
+        self.model.update_Deferred(deferred_id, customer_name, phone_num, address, price)
+        self.show_Deferred()
+        
         
 
 

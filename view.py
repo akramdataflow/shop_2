@@ -833,6 +833,8 @@ class Deferred(QMainWindow):
         self.setWindowTitle("دفع مؤجل")
         self.resize(500, 500)
 
+        self.showMaximized()
+
          
         # فريم جديد
         new_frame = QFrame(self)
@@ -857,7 +859,7 @@ class Deferred(QMainWindow):
 
         # فريم يحتوي على باقي العناصر مع Layout منفصل
         frame = QFrame()
-        layout2 = QGridLayout(frame)
+        
         new_layout.addWidget(frame, 1, 0, 1, 2)
 
         # إضافة أيقونة في Layout1 (Layout العنوان)
@@ -868,14 +870,58 @@ class Deferred(QMainWindow):
 
 
          #انشاء فريم لوضع البيانات الفريم الابيض السفلي
+        
+         #انشاء فريم لوضع البيانات الفريم الابيض السفلي
         frame = QFrame()
-        frame.setStyleSheet("""
-            border-radius: 4px;
-            background-color: #fff;
-        """)
-        frame.setFixedHeight(700)
-        new_layout.addWidget(frame,1,0)
-        frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        data_frame_layout = QVBoxLayout(frame)
+        
+        # استرجاع البيانات من الموديل عبر الكونترولر
+        data_tabel = self.controller.get_Deferred_from_model()
+        
+        # إنشاء جدول البيانات
+        self.table = QTableWidget()
+
+        #جعل حجم الجدول يتناسب مع حجم الشاشه 
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        self.table.setAlternatingRowColors(True)
+        
+        # تعيين خلفية الجدول إلى اللون الأبيض
+        self.table.setStyleSheet("background-color: white;")
+
+        
+        # إعداد الجدول: تعيين الأعمدة
+        self.table.setColumnCount(5)  # عدد الأعمدة (الاسم، النوع، العدد، تاريخ الانتهاء)
+        self.table.setHorizontalHeaderLabels(['اسم العميل', 'رقم الهاتف', 'العنوان', 'السعر', 'الترميز'])  # العناوين
+        
+        # تعبئة الجدول بالبيانات
+        if data_tabel and len(data_tabel[0]) > 0:  # التأكد من وجود بيانات
+            row_count = len(data_tabel[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+            self.table.setRowCount(row_count)
+        
+            # تعبئة البيانات في الجدول
+            for row in range(row_count): 
+                self.table.setItem(row, 0, QTableWidgetItem(data_tabel[1][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_tabel[2][row]))  # إدخال رقم الهاتف
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_tabel[3][row])))  # إدخال العنوان
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_tabel[4][row])))  #السعر
+                self.table.setItem(row, 4, QTableWidgetItem(str(data_tabel[0][row])))   #id
+        
+            # تعديل حجم الأعمدة لتناسب المحتوى بعد تعبئة الجدول
+            self.table.resizeColumnsToContents()
+        else:
+            self.table.setRowCount(0)
+        
+        # إضافة الجدول إلى التخطيط داخل الفريم
+        data_frame_layout.addWidget(self.table)
+        
+        # تعيين التخطيط للفريم
+        frame.setLayout(data_frame_layout)
+        
+        # إضافة الفريم إلى التخطيط الخارجي
+        new_layout.addWidget(frame, 1, 0)
+    
+
 
         
         #انشاء فريم للحفض الفريم الابيض الجانبي
@@ -885,7 +931,7 @@ class Deferred(QMainWindow):
             background-color: #1A3654;
         """)
         save_frame_layout = QGridLayout(save_frame)
-        # save_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        
 
        
 
@@ -924,13 +970,12 @@ class Deferred(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_history, 0, 1)
 
-        history_input = QLineEdit()
-        history_input.setStyleSheet("""
+        self.customer_name = QLineEdit()
+        self.customer_name.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(history_input, 0, 0)
-
+        save_frame_layout.addWidget( self.customer_name, 0, 0)
 
 
         
@@ -947,12 +992,12 @@ class Deferred(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_history, 1, 1)
 
-        history_input = QLineEdit()
-        history_input.setStyleSheet("""
+        self.phone_num = QLineEdit()
+        self.phone_num.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(history_input, 1, 0)
+        save_frame_layout.addWidget(self.phone_num , 1, 0)
 
         ######
         
@@ -970,12 +1015,12 @@ class Deferred(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_number, 2, 1)
 
-        number_input = QLineEdit()
-        number_input.setStyleSheet("""
+        self.address = QLineEdit()
+        self.address.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(number_input, 2, 0)
+        save_frame_layout.addWidget(self.address, 2, 0)
 
 
 
@@ -993,16 +1038,17 @@ class Deferred(QMainWindow):
         ''')
         save_frame_layout.addWidget(label_End_date, 3, 1)
 
-        End_date_input = QLineEdit()
-        End_date_input.setStyleSheet("""
+        self.price = QLineEdit()
+        self.price.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        save_frame_layout.addWidget(End_date_input, 3, 0)
+        save_frame_layout.addWidget(self.price, 3, 0)
 
 
          #المجموع 
         button1 = QPushButton()
+        button1.clicked.connect(self.send_data_defer_to_controller)
         button1.setStyleSheet("""
                     QPushButton {
                     border-radius: 4px;
@@ -1039,6 +1085,7 @@ class Deferred(QMainWindow):
 
 
         button2 = QPushButton()
+        button2.clicked.connect(self.controller.update_defer_show)
         button2.setStyleSheet("""
                      QPushButton {
                     border-radius: 4px;
@@ -1074,6 +1121,7 @@ class Deferred(QMainWindow):
 
         
         button3 = QPushButton()
+        button3.clicked.connect(self.controller.del_defer_show)
         button3.setStyleSheet("""
                      QPushButton {
                     border-radius: 4px;
@@ -1106,6 +1154,44 @@ class Deferred(QMainWindow):
         button3.setIconSize(QSize(90, 36))
         
         save_frame_layout.addWidget(button3,6,0,1,2)
+
+
+        
+    def send_data_defer_to_controller(self):
+        # الحصول على البيانات من الواجهة
+        customer_name = self.customer_name.text()
+        phone_num = self.phone_num.text()
+        address = self.address.text()
+        price = self.price.text()
+
+        # إرسال البيانات إلى الكونترولر لإضافتها للنموذج
+        self.controller.add_Deferred_to_model(customer_name, phone_num, address, price)
+
+        # تحديث الجدول بعد الحفظ
+        self.refresh_table()
+
+    def refresh_table(self):
+        # استرجاع البيانات من النموذج عبر الكونترولر
+        data_table = self.controller.get_Deferred_from_model()
+
+        # مسح البيانات القديمة في الجدول
+        self.table.setRowCount(0)
+
+        # تعبئة الجدول بالبيانات الجديدة
+        if data_table and len(data_table[0]) > 0:
+            row_count = len(data_table[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+            self.table.setRowCount(row_count)
+
+            
+            for row in range(row_count):
+                self.table.setItem(row, 4, QTableWidgetItem(str(data_table[0][row])))  # إدخال الاسم
+                self.table.setItem(row, 0, QTableWidgetItem(data_table[1][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_table[2][row]))  # إدخال النوع
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_table[3][row])))  # إدخال العدد
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_table[4][row])))
+
+
+
 
 
 
@@ -1152,6 +1238,10 @@ class  Materials(QMainWindow):
         layout1.addWidget(icon_label)
 
 
+
+
+
+
          #انشاء فريم لوضع البيانات الفريم الابيض السفلي
         frame = QFrame()
         data_frame_layout = QVBoxLayout(frame)
@@ -1173,7 +1263,7 @@ class  Materials(QMainWindow):
         
         # إعداد الجدول: تعيين الأعمدة
         self.table.setColumnCount(6)  # عدد الأعمدة (الاسم، النوع، العدد، تاريخ الانتهاء)
-        self.table.setHorizontalHeaderLabels(['الاسم', 'النوع', 'العدد', 'تاريخ الانتهاء', 'الترميز', 'السعر'])  # العناوين
+        self.table.setHorizontalHeaderLabels(['الاسم', 'النوع', 'العدد', 'تاريخ الانتهاء', 'السعر', 'الترميز'])  # العناوين
         
         # تعبئة الجدول بالبيانات
         if data_tabel and len(data_tabel[0]) > 0:  # التأكد من وجود بيانات
@@ -1203,6 +1293,12 @@ class  Materials(QMainWindow):
         # إضافة الفريم إلى التخطيط الخارجي
         new_layout.addWidget(frame, 1, 0)
     
+
+
+
+
+
+
         
         #انشاء فريم للحفض الفريم الابيض الجانبي
         save_frame = QFrame()
@@ -1388,6 +1484,8 @@ class  Materials(QMainWindow):
         button1.setIconSize(QSize(90, 36))
         
         save_frame_layout.addWidget(button1,5,0,1,2)
+        
+
 
 
 
@@ -1942,10 +2040,257 @@ class UpdateMat(QMainWindow):
         type = self.type_mat.text()
         price = self.price_mat.text()
         expaier = self.expaier_mat.date().toString('yyyy-MM-dd')
-        self.controller.update_material_to_model(id_mat, name, type, expaier, price)
+        self.controller.update_material_to_model(id_mat, name, type, price, expaier)
 
         
 
+
+
+class DelDefer(QMainWindow):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle("تعديل المادة")
+        self.resize(300, 250)
+
+
+        new_frame = QFrame(self)
+        new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
+        new_frame.setGeometry(0, 0, self.width(), self.height())
+        self.setCentralWidget(new_frame)
+
+        new_layout = QGridLayout(new_frame)
+
+
+        label = QLabel('اكتب ترميز المنتج الذي تريد حذفه')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,0,1)
+
+        self.id_defe = QLineEdit('')
+        self.id_defe.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.id_defe,0,0)
+
+        button1 = QPushButton()
+        button1.clicked.connect(self.send_id_defe_to_controller)
+        button1.setStyleSheet("""
+                     QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                             
+                               """)
+        
+        icon = QIcon('./static/14.png')  # تحميل الأيقونة
+        button1.setIcon(icon)
+        button1.setIconSize(QSize(90, 36))
+        
+        new_layout.addWidget(button1,1,0,1,2)
+
+    def send_id_defe_to_controller(self):
+        id_defe = self.id_defe.text()
+        self.controller.del_Deferred_from_model(id_defe)
+
+        
+
+
+
+
+class UpdateDefer(QMainWindow):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle("حذف مادة")
+        self.resize(300, 250)
+
+        new_frame = QFrame(self)
+        new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
+        new_frame.setGeometry(0, 0, self.width(), self.height())
+        self.setCentralWidget(new_frame)
+
+        new_layout = QGridLayout(new_frame)
+
+
+        label = QLabel('اكتب ترميز المنتج الذي تريد تعديله')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,0,1)
+
+        self.id_defe = QLineEdit('')
+        self.id_defe.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.id_defe,0,0)
+
+
+        label = QLabel('اسم العميل')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,1,1)
+
+        self.customer_name = QLineEdit('')
+        self.customer_name.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.customer_name,1,0)
+        
+
+        label = QLabel(' رقم الهاتف')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,2,1)
+
+
+
+        self.phone_num= QLineEdit('')
+        self.phone_num.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.phone_num,2,0)
+
+
+        label = QLabel('العنوان')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,3,1)
+
+
+
+        self.address = QLineEdit('')
+        self.address.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.address,3,0)
+
+
+        
+        label = QLabel('السعر')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,4,1)
+
+
+
+        self.price = QLineEdit('')
+        self.price.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.price,4,0)
+
+
+
+
+
+        button = QPushButton()
+        button.clicked.connect(self.send_update_data_defer_to_controller)
+        button.setStyleSheet("""
+                     QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                             
+                               """)
+        
+        icon = QIcon('./static/20.png')  # تحميل الأيقونة
+        button.setIcon(icon)
+        button.setIconSize(QSize(90, 36))
+
+        new_layout.addWidget(button,5,0,1,2)
+
+    def send_update_data_defer_to_controller(self):
+        id_defe = self.id_defe.text()
+        customer_name = self.customer_name.text()
+        phone_num = self.phone_num.text()
+        address = self.address.text()
+        price = self.address.date()
+        self.controller.update_deferred_to_model(id_defe, customer_name, phone_num, address, price)
+
+        
+    
 
         
         
