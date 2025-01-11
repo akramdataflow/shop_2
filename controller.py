@@ -116,6 +116,16 @@ class Controller:
         self.model.del_bill_detales(material_name)
         self.show_list()
 
+        ################################المبيعات للحذف والتعديل
+    def del_Sels_show(self):
+        self.show_del_Sels = Delsels(self)
+        self.show_del_Sels.show()
+
+    def update_Sels_show(self):
+        self.show_update_Sels = Updatesels(self)
+        self.show_update_Sels.show()
+
+
 
     
 

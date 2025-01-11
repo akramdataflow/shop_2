@@ -247,13 +247,23 @@ class Lists(QMainWindow):
         data_frame_layout = QVBoxLayout(frame)
         
         # استرجاع البيانات من الموديل عبر الكونترولر
-        data_tabel = self.controller.get_bill_detales_from_model()
+        # Get the bill details from the model
+        bill_details = controller.get_bill_detales_from_model()
         
+        # Assign total_price_list from bill_details
+        total_price_list = bill_details[-1]
+        
+        # Convert total_price_list to floats
+        total_price_list = [float(price) for price in total_price_list]
+        
+        # Calculate the total price for all items
+        total_price_for_all_items = sum(total_price_list)      
         # إنشاء جدول البيانات
         self.table = QTableWidget()
 
         #جعل حجم الجدول يتناسب مع حجم الشاشه 
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
 
         self.table.setAlternatingRowColors(True)
         
@@ -266,17 +276,17 @@ class Lists(QMainWindow):
         self.table.setHorizontalHeaderLabels(['المادة','سعر القطعة','العدد', 'السعر الكلي', 'الترميز'])  # العناوين
         
         # تعبئة الجدول بالبيانات
-        if data_tabel and len(data_tabel[0]) > 0:  # التأكد من وجود بيانات
-            row_count = len(data_tabel[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+        if bill_details and len(bill_details[0]) > 0:  # التأكد من وجود بيانات
+            row_count = len(bill_details[0])  # افتراض أن جميع الأعمدة لها نفس الطول
             self.table.setRowCount(row_count)
         
             # تعبئة البيانات في الجدول
             for row in range(row_count): 
-                self.table.setItem(row, 4, QTableWidgetItem(data_tabel[0][row]))  # إدخال الاسم
-                self.table.setItem(row, 0, QTableWidgetItem(data_tabel[1][row]))  # إدخال رقم الهاتف
-                self.table.setItem(row, 1, QTableWidgetItem(str(data_tabel[2][row])))  # إدخال العنوان
-                self.table.setItem(row, 2, QTableWidgetItem(str(data_tabel[3][row])))  #السعر
-                self.table.setItem(row, 3, QTableWidgetItem(str(data_tabel[4][row])))   #id
+                self.table.setItem(row, 4, QTableWidgetItem(bill_details[0][row]))  # إدخال الاسم
+                self.table.setItem(row, 0, QTableWidgetItem(bill_details[1][row]))  # إدخال رقم الهاتف
+                self.table.setItem(row, 1, QTableWidgetItem(str(bill_details[2][row])))  # إدخال العنوان
+                self.table.setItem(row, 2, QTableWidgetItem(str(bill_details[3][row])))  #السعر
+                self.table.setItem(row, 3, QTableWidgetItem(str(bill_details[4][row])))   #id
         
             # تعديل حجم الأعمدة لتناسب المحتوى بعد تعبئة الجدول
             self.table.resizeColumnsToContents()
@@ -297,7 +307,9 @@ class Lists(QMainWindow):
         total_frame_layout = QHBoxLayout(total_frame)
         new_layout.addWidget(total_frame, 2, 0, 1, 2)
 
-        label = QLabel("تاريخ الفاتورة : {2025}/{1}/{9}")
+        date = datetime.now().strftime('%Y-%m-%d')
+
+        label = QLabel(f"تاريخ الفاتورة : {date}")
         label.setStyleSheet('''
             background-color: #ffffff;
             font-family: Inter;
@@ -320,7 +332,7 @@ class Lists(QMainWindow):
         ''')
         total_frame_layout.addWidget(label)
 
-        label = QLabel(f"المجموع : {33000}")
+        label = QLabel(f"المجموع : {total_price_for_all_items}")
         label.setStyleSheet('''
              background-color: #ffffff;
             font-family: Inter;
@@ -392,7 +404,7 @@ class Lists(QMainWindow):
         
         icon = QIcon('./static/13.png')  # تحميل الأيقونة
         button1.setIcon(icon)
-        button1.setIconSize(QSize(229, 62))
+        button1.setIconSize(QSize(200, 62))
        
         save_frame_layout.addWidget(button1,0,0)
         
@@ -2213,7 +2225,7 @@ class UpdateDefer(QMainWindow):
         super().__init__()
         self.controller = controller
 
-        self.setWindowTitle("حذف مادة")
+        self.setWindowTitle("تعديل مادة")
         self.resize(300, 250)
 
         new_frame = QFrame(self)
@@ -2448,6 +2460,27 @@ class DelListDetales(QMainWindow):
     def send_id_defe_to_controller(self):
         id_defe = self.id_defe.text()
         self.controller.del_bill_detales_from_model(id_defe)
+
+
+        
+class Updatesels(QMainWindow):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle("تعديل مادة")
+        self.resize(300, 250)
+
+
+          
+class Delsels(QMainWindow):
+    def __init__(self, controller):
+        super().__init__()
+        self.controller = controller
+
+        self.setWindowTitle("حذف تفاصيل الطلب")
+        self.resize(300, 250)
+
 
         
         
