@@ -503,6 +503,8 @@ class Sales(QMainWindow):
         self.resize(500, 500)
          
         # فريم جديد
+       
+ # فريم جديد
         new_frame = QFrame(self)
         new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
         new_frame.setGeometry(0, 0, self.width(), self.height())
@@ -534,16 +536,26 @@ class Sales(QMainWindow):
         icon_label.setPixmap(icon.pixmap(100, 100))  # تحديد حجم الأيقونة
         layout1.addWidget(icon_label)
 
+        save_frame = QFrame()
+        save_frame.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #1A3654;
+        """)
+        save_frame_layout = QGridLayout(save_frame)
+        # save_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
-
-         #انشاء فريم لوضع البيانات الفريم الابيض السفلي
         frame = QFrame()
         frame.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
+        frame.setFixedHeight(700)
         new_layout.addWidget(frame,1,0)
         frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+
+
+
+    
 
         
         #انشاء فريم للحفض الفريم الابيض الجانبي
@@ -588,11 +600,17 @@ class Sales(QMainWindow):
         save_frame_layout.addWidget(label_history, 0, 1)
 
         history_input = QLineEdit()
+        
+       
+        
         history_input.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
         save_frame_layout.addWidget(history_input, 0, 0)
+
+
+
 
 
         #المجموع 
@@ -626,6 +644,9 @@ class Sales(QMainWindow):
             background-color: #fff;
         """)
         save_frame_layout.addWidget(total_input, 2, 0)
+
+
+       
 
 
 
@@ -689,12 +710,12 @@ class Purchases(QMainWindow):
         ''')
         layout2.addWidget(label_price, 0, 3)
 
-        price_input = QLineEdit()
-        price_input.setStyleSheet("""
+        self.price = QLineEdit()
+        self.price.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        layout2.addWidget(price_input, 0, 2)
+        layout2.addWidget(self.price, 0, 2)
 
         # اسم الشركة
         label_company = QLabel("أسم الشركة")
@@ -708,12 +729,12 @@ class Purchases(QMainWindow):
         ''')
         layout2.addWidget(label_company, 0, 1)
 
-        company_input = QLineEdit()
-        company_input.setStyleSheet("""
+        self.company_name = QLineEdit()
+        self.company_name.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        layout2.addWidget(company_input, 0, 0)
+        layout2.addWidget(self.company_name, 0, 0)
 
         # التاريخ والوقت
         label_datetime = QLabel("التاريخ والوقت")
@@ -727,12 +748,17 @@ class Purchases(QMainWindow):
         ''')
         layout2.addWidget(label_datetime, 1, 1)
 
-        datetime_input = QLineEdit()
-        datetime_input.setStyleSheet("""
+        self.date_h = QDateEdit()
+        self.date_h.setDate(QDate.currentDate())  # إضافة الأقواس
+
+        self.date_h.setDisplayFormat("dd/MM/yyyy")
+        self.date_h.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        layout2.addWidget(datetime_input, 1, 0)
+        layout2.addWidget(self.date_h, 1, 0)
+
+
 
         # رقم القائمة
         label_list_number = QLabel("رقم القائمة")
@@ -746,24 +772,68 @@ class Purchases(QMainWindow):
         ''')
         layout2.addWidget(label_list_number, 1, 3)
 
-        list_number_input = QLineEdit()
-        list_number_input.setStyleSheet("""
+        self.bill_num = QLineEdit()
+        self.bill_num.setStyleSheet("""
             border-radius: 4px;
             background-color: #fff;
         """)
-        layout2.addWidget(list_number_input, 1, 2)
+        layout2.addWidget(self.bill_num, 1, 2)
 
-        #انشاء فريم لوضع البيانات الفريم الابيض السفلي
+       
+        
+        
         frame = QFrame()
-        frame.setStyleSheet("""
-            border-radius: 4px;
-            background-color: #fff;
-        """)
-        new_layout.addWidget(frame,2,0)
-        frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        data_frame_layout = QVBoxLayout(frame)
         
+        # استرجاع البيانات من الموديل عبر الكونترولر
+        data_tabel = self.controller.get_purc_from_model()
         
-        #انشاء فريم للحفض الفريم الابيض الجانبي
+        # إنشاء جدول البيانات
+        self.table = QTableWidget()
+
+        #جعل حجم الجدول يتناسب مع حجم الشاشه 
+        self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+        self.table.setAlternatingRowColors(True)
+        
+        # تعيين خلفية الجدول إلى اللون الأبيض
+        self.table.setStyleSheet("background-color: white;")
+
+        
+        # إعداد الجدول: تعيين الأعمدة
+        self.table.setColumnCount(5)  
+        self.table.setHorizontalHeaderLabels(['السعر', 'اسم الشركة', 'رقم القاىمة', 'التاريخ والوقت', 'الترميز']) 
+        
+        # تعبئة الجدول بالبيانات
+        if data_tabel and len(data_tabel[0]) > 0:  # التأكد من وجود بيانات
+            row_count = len(data_tabel[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+            self.table.setRowCount(row_count)
+        
+            # تعبئة البيانات في الجدول
+            for row in range(row_count):
+                self.table.setItem(row, 4, QTableWidgetItem(str(data_tabel[0][row])))  
+                self.table.setItem(row, 0, QTableWidgetItem(data_tabel[1][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_tabel[2][row]))  # إدخال النوع
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_tabel[3][row])))  # إدخال العدد
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_tabel[4][row])))  # إدخال تاريخ الانتهاء
+                
+        
+            # تعديل حجم الأعمدة لتناسب المحتوى بعد تعبئة الجدول
+            self.table.resizeColumnsToContents()
+        else:
+            self.table.setRowCount(0)
+        
+        # إضافة الجدول إلى التخطيط داخل الفريم
+        data_frame_layout.addWidget(self.table)
+        
+        # تعيين التخطيط للفريم
+        frame.setLayout(data_frame_layout)
+        
+        # إضافة الفريم إلى التخطيط الخارجي
+        new_layout.addWidget(frame, 2, 0)
+
+       
+
         save_frame = QFrame()
         save_frame.setStyleSheet("""
             border-radius: 4px;
@@ -771,9 +841,6 @@ class Purchases(QMainWindow):
         """)
         save_frame_layout = QGridLayout(save_frame)
         # save_frame.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-
-       
-
 
 
 
@@ -787,15 +854,16 @@ class Purchases(QMainWindow):
             line-height: normal;
         ''')
 
-        save_frame_layout.addWidget(label,0,0)
+        save_frame_layout.addWidget(label,0,1)
         # 1,1 تعني العمود الثاني والصف الثاني
 
         # 2,1 تعني انهو ياخذ صفين الثاني والثالث وياخذ عمود واحد
-        new_layout.addWidget(save_frame,2,1)
+        new_layout.addWidget(save_frame,2,2)
 
 
 
         button1 = QPushButton()
+        button1.clicked.connect(self.send_purc_to_controller)
         button1.setStyleSheet("""
                  QPushButton {
                     border-radius: 4px;
@@ -835,6 +903,7 @@ class Purchases(QMainWindow):
 
         
         button2 = QPushButton()
+        button2.clicked.connect(self.controller.del_purc_show)
         button2.setStyleSheet("""
                     QPushButton {
                     border-radius: 4px;
@@ -873,36 +942,57 @@ class Purchases(QMainWindow):
 
 
         
-        button3 = QPushButton()
-        button3.setStyleSheet("""
-                    border-radius: 4px;
-                    background: #50F296;
-                    color: #1A3654;
-                    font-family: Inter;
-                    font-size: 16px;
-                    font-style: normal;
-                    font-weight: 700;
-                    line-height: normal;
-                    
-                    background-repeat: no-repeat;
-                    background-position: center;
-                             
-                               """)
         
-        icon = QIcon('./static/Group 9 (1).png')  # تحميل الأيقونة
-        button3.setIcon(icon)
-        button3.setIconSize(QSize(90, 36))
-        
-        save_frame_layout.addWidget(button3,2,0)
         
 
 
-        total_input = QLineEdit()
-        total_input.setStyleSheet("""
-            border-radius: 4px;
-            background-color: #fff;
-        """)
-        save_frame_layout.addWidget(total_input, 3, 0)
+        label = QLabel(f"المجموع : {save_frame_layout}")
+        label.setStyleSheet('''
+             background-color: #ffffff;
+            font-family: Inter;
+            font-size:20px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        save_frame_layout.addWidget(label,2,0)
+
+    def send_purc_to_controller(self):
+        # الحصول على البيانات من الواجهة
+        price = self.price.text()
+        company_name = self.company_name.text()
+        bill_num = self.bill_num.text()
+        date = self.date_h.date().toString('yyyy-MM-dd')
+        
+
+        # إرسال البيانات إلى الكونترولر لإضافتها للنموذج
+        self.controller.add_purc_to_model(price, company_name, bill_num, date)
+
+        # تحديث الجدول بعد الحفظ
+        self.refresh_table()
+
+    def refresh_table(self):
+        # استرجاع البيانات من النموذج عبر الكونترولر
+        data_table = self.controller.get_purc_from_model()
+
+        # مسح البيانات القديمة في الجدول
+        self.table.setRowCount(0)
+
+        # تعبئة الجدول بالبيانات الجديدة
+        if data_table and len(data_table[0]) > 0:
+            row_count = len(data_table[0])  # افتراض أن جميع الأعمدة لها نفس الطول
+            self.table.setRowCount(row_count)
+
+            for row in range(row_count):
+                self.table.setItem(row, 4, QTableWidgetItem(str(data_table[0][row])))  # إدخال الاسم
+                self.table.setItem(row, 0, QTableWidgetItem(data_table[1][row]))  # إدخال الاسم
+                self.table.setItem(row, 1, QTableWidgetItem(data_table[2][row]))  # إدخال النوع
+                self.table.setItem(row, 2, QTableWidgetItem(str(data_table[3][row])))  # إدخال العدد
+                self.table.setItem(row, 3, QTableWidgetItem(str(data_table[4][row])))  # إدخال تاريخ الانتهاء
+                
+
+
+
 
         
 
@@ -2463,23 +2553,83 @@ class DelListDetales(QMainWindow):
 
 
         
-class Updatesels(QMainWindow):
+
+class Delpurc(QMainWindow):
     def __init__(self, controller):
         super().__init__()
         self.controller = controller
 
-        self.setWindowTitle("تعديل مادة")
+        self.setWindowTitle("حذف المادة")
         self.resize(300, 250)
 
 
-          
-class Delsels(QMainWindow):
-    def __init__(self, controller):
-        super().__init__()
-        self.controller = controller
+         
+        # فريم جديد
+        new_frame = QFrame(self)
+        new_frame.setStyleSheet("""background-color: #1A3654; border-radius: 4px;""")
+        new_frame.setGeometry(0, 0, self.width(), self.height())
+        self.setCentralWidget(new_frame)
 
-        self.setWindowTitle("حذف تفاصيل الطلب")
-        self.resize(300, 250)
+        new_layout = QGridLayout(new_frame)
+
+
+        label = QLabel('اكتب ترميز المنتج الذي تريد حذفه')
+        label.setStyleSheet('''
+            color: #FFF;
+            font-family: Inter;
+            font-size: 14px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+        ''')
+        new_layout.addWidget(label,0,1)
+
+        self.purc_id = QLineEdit('')
+        self.purc_id.setStyleSheet("""
+            border-radius: 4px;
+            background-color: #fff;
+        """)
+        new_layout.addWidget(self.purc_id,0,0)
+
+        button1 = QPushButton()
+        button1.clicked.connect(self.send_id_purc_to_controller)
+        button1.setStyleSheet("""
+                     QPushButton {
+                    border-radius: 4px;
+                    background: #50F296;
+                    color: #1A3654;
+                    font-family: Inter;
+                    font-size: 16px;
+                    font-style: normal;
+                    font-weight: 700;
+                    line-height: normal;
+                    
+                    background-repeat: no-repeat;
+                    background-position: center;}
+                              
+                    QPushButton:hover {
+                    background-color: lightblue; /* Hover color */
+                      
+                              
+                               }
+                              
+                    QPushButton:pressed {
+                    background-color: #92F7BD; /* Pressed color */
+                    color: white; /* Change text color on press */
+                        }
+                             
+                               """)
+        
+        icon = QIcon('./static/14.png')  # تحميل الأيقونة
+        button1.setIcon(icon)
+        button1.setIconSize(QSize(90, 36))
+        
+        new_layout.addWidget(button1,1,0,1,2)
+
+    def send_id_purc_to_controller(self):
+        id_purc = self.purc_id.text()  # استخدم purc_id بدلاً من id_purc
+
+        self.controller.del_purc_from_model(id_purc)
 
 
         

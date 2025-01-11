@@ -116,15 +116,24 @@ class Controller:
         self.model.del_bill_detales(material_name)
         self.show_list()
 
-        ################################المبيعات للحذف والتعديل
-    def del_Sels_show(self):
-        self.show_del_Sels = Delsels(self)
-        self.show_del_Sels.show()
+        #########################################purc
 
-    def update_Sels_show(self):
-        self.show_update_Sels = Updatesels(self)
-        self.show_update_Sels.show()
 
+    def del_purc_show(self):
+        self.show_del_purc = Delpurc(self)
+        self.show_del_purc.show()
+
+
+    def add_purc_to_model(self,price, company_name, bill_num, date):
+        self.model.add_purc(price, company_name, bill_num, date)
+
+    def get_purc_from_model(self):
+        purc_id,price, company_name, bill_num, date = self.model.get_purc()
+        return purc_id,price, company_name, bill_num, date
+    
+    def del_purc_from_model(self, purc_id):
+        self.model.del_purc(purc_id)
+        self.show_Purchases()
 
 
     

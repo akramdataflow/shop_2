@@ -48,11 +48,11 @@ def init_db():
         );
     ''')
 
-    # Create Invoices Table
+    # Create Invoices Table #
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS Invoices (
             invoice_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            invoice_date DATETIME NOT NULL,
+            invoice_date DATETIME NOT NULL,  
             total_amount INTEGER NOT NULL
         );
     ''')

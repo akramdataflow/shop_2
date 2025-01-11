@@ -102,8 +102,31 @@ class Model:
         self.cursor.execute("DELETE FROM InvoiceDetails WHERE material_name = ?", (material_name,))
         self.conn.commit()
 
-        #################################المبيعات
+        #################################المشتريات
+    def add_purc(self, price, company_name, bill_num, date):
+        self.cursor.execute("INSERT INTO Purchases (price, company_name, bill_num, date) VALUES ( ?, ?, ?, ?)", (price, company_name, bill_num, date))
+        self.conn.commit()#لكي يفعلي الاكوات على قاعده البيانات
+
+    def get_purc(self):
+        self.cursor.execute('SELECT * FROM Purchases')
+        rows = self.cursor.fetchall()  # جلب جميع البيانات دفعة واحدة
+        purc_id = [col[0] for col in rows] 
+        price = [col[1] for col in rows] 
+        company_name = [col[2] for col in rows]
+        bill_num = [col[3] for col in rows] 
+        date = [col[4] for col in rows]
+        return purc_id,price, company_name, bill_num, date
+
+
+    
+    def del_purc(self, purc_id):
+        self.cursor.execute("DELETE FROM Purchases WHERE id = ?", (purc_id,))
+        self.conn.commit()  
+ 
+
+
+
+       
+
         
-    def add_sales(self,):
-        self.cursor.execute("INSERT INTO Deferred (customer_name, phone_num, address,  price) VALUES (?, ?, ?, ?)", (customer_name, phone_num, address, price))
-        self.conn.commit()
+    
