@@ -6,7 +6,7 @@ class Model:
         self.conn = sqlite3.connect('data.db')  
         self.cursor = self.conn.cursor()
         self.add_bill('23432','sdgdfg')
-        self.add_bill_detales(invoice_id=3, material_name='del1', quantity="3", unit_price=234, total_price=10000000)
+        self.add_bill_detales(invoice_id=3, material_name='del1', quantity="3", unit_price=234, total_price=22000)
 
     def add_material(self, name, type, count, expaier, price):
         self.cursor.execute("INSERT INTO Materials (name_of_material, type_of_materials, count, expaier, price) VALUES (?, ?, ?, ?, ?)", (name, type, count, expaier, price))
